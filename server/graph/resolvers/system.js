@@ -111,13 +111,14 @@ module.exports = {
      */
     async importUsersFromV1(obj, args, context) {
       try {
-        const MongoClient = require('mongodb').MongoClient
+        const { MongoClient } = require('mongodb')
         if (args.mongoDbConnString && args.mongoDbConnString.length > 10) {
           // -> Connect to DB
 
-          const client = await MongoClient.connect(args.mongoDbConnString, {
-            appname: `Wiki.js ${WIKI.version} Migration Tool`
+          const client = new MongoClient(args.mongoDbConnString, {
+            appName: `Wiki.js ${WIKI.version} Migration Tool`
           })
+          await client.connect()
           const dbUsers = client.db().collection('users')
           const userCursor = dbUsers.find({ email: { '$ne': 'guest' } })
 
